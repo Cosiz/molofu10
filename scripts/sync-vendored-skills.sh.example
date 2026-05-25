@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Sync third-party skills into .hermes/skills/vendored/<author>/
+# Copy this to scripts/sync-vendored-skills.sh and customize.
+#
+# Usage: ./scripts/sync-vendored-skills.sh
+# Or wire as a cron task.
+
+set -euo pipefail
+
+VENDOR_DIR=".hermes/skills/vendored"
+mkdir -p "$VENDOR_DIR"
+
+sync_repo() {
+  local author="$1"
+  local repo_url="$2"
+  local target="$VENDOR_DIR/$author"
+
+  echo "Syncing $author from $repo_url ..."
+  if [ -d "$target/.git" ]; then
+    git -C "$target" pull --ff-only
+  else
+    rm -rf "$target"
+    git clone --depth 1 "$repo_url" "$target"
+  fi
+
+  # Strip .git to avoid nested-repo issues (drop this line if you prefer submodules)
+  rm -rf "$target/.git"
+}
+
+# ============================================================
+# Matt Pocock's skills — https://github.com/mattpocock/skills
+# ============================================================
+# His repo layout:
+#   skills/engineering/    -> grill-with-docs, tdd, diagnose, improve-codebase-architecture,
+#                             prototype, to-prd, to-issues, triage, zoom-out
+#   skills/productivity/   -> grill-me, etc.
+#   skills/personal/, skills/misc/
+# Most relevant to our pipeline:
+#   - engineering/grill-with-docs  -> companion to Stage 1 spec drafting
+#   - engineering/tdd              -> companion to Stage 2 test-first
+#   - engineering/improve-codebase-architecture -> companion to Stage 4 hardening
+#   - engineering/to-prd / to-issues -> upstream feeders to Stage 1
+sync_repo "mattpocock" "https://github.com/mattpocock/skills.git"
+
+# Add additional sources here as you adopt them.
+# sync_repo "<author>" "https://github.com/<owner>/<repo>.git"
+
+echo
+echo "Vendored skills synced."
+echo "Remember to update AGENTS.md section 3 with today's date as 'Last synced'."

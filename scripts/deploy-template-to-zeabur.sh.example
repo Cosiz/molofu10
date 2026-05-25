@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Push this template to your Zeabur container so you can bootstrap projects there.
+# Run on your LOCAL machine.
+#
+# Prerequisites:
+#   - SSH access to your Zeabur container (or rsync over SSH)
+#   - Replace ZEABUR_HOST below with your actual host/port
+#
+# Usage: ./scripts/deploy-template-to-zeabur.sh.example
+
+set -euo pipefail
+
+ZEABUR_HOST="root@<your-service>.zeabur.app"
+ZEABUR_PORT="22"
+REMOTE_TEMPLATE_PATH="/root/project-template"
+
+LOCAL_TEMPLATE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+echo "Deploying template to $ZEABUR_HOST:$REMOTE_TEMPLATE_PATH"
+
+rsync -avz --delete \
+  -e "ssh -p $ZEABUR_PORT" \
+  --exclude='.git/' \
+  --exclude='node_modules/' \
+  --exclude='.env' \
+  "$LOCAL_TEMPLATE_DIR/" \
+  "$ZEABUR_HOST:$REMOTE_TEMPLATE_PATH/"
+
+echo
+echo "Done. On the Zeabur container, bootstrap a new project with:"
+echo "  ssh -p $ZEABUR_PORT $ZEABUR_HOST"
+echo "  $REMOTE_TEMPLATE_PATH/scripts/init-new-project.sh my-new-product"

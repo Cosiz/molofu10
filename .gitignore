@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/*
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.turbo/
+*.tsbuildinfo
+
+# Test / coverage
+coverage/
+.coverage
+.nyc_output/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+.cursor/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Hermes runtime (skills are committed, runtime artifacts are not)
+.hermes/cache/
+.hermes/logs/
+.hermes/sessions/
+
+# OpenCode runtime
+.opencode/cache/
+
+# Costrict cache
+.costrict/cache/
+
+# Vendored skills' inner .git folders (sync script strips them anyway)
+.hermes/skills/vendored/*/.git/
+
+# Local override of sync script (the .example is committed; the real one may have personal tokens)
+scripts/sync-vendored-skills.sh
